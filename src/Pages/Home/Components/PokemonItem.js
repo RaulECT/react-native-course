@@ -1,12 +1,17 @@
-import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import React, {useEffect} from 'react';
+import {View, Text, StyleSheet} from 'react-native';
 
 const COLORS = ['#717EC3', '#5BC0EB', '#FDE74C', '#E55934'];
 
-function PokemonItem({ pokemon = 'Evee', number = 1 }) {
+function PokemonItem({pokemon = 'Evee', number = 1}) {
   const {item, abbrevation, abbrevationText, pokemonName} = styles;
+  const color = getRandomColor();
   const pokemonAbrv = pokemon.slice(0, 2).toUpperCase();
-  const _abbrevation = { ...abbrevation, backgroundColor: getRandomColor() };
+  const _abbrevation = {...abbrevation, backgroundColor: color};
+
+  useEffect(() => {
+    console.log('Soy un item ', color, number, pokemon);
+  }, []);
 
   function getRandomColor() {
     return COLORS[Math.floor(Math.random() * COLORS.length)];
@@ -35,10 +40,9 @@ const styles = StyleSheet.create({
       width: 0,
       height: 3,
     },
-    shadowOpacity: 0.27,
-    shadowRadius: 4.65,
-
-    elevation: 6,
+    shadowOpacity: 0.2,
+    shadowRadius: 1.41,
+    elevation: 2,
     marginBottom: 10,
   },
   abbrevation: {
