@@ -1,16 +1,18 @@
-import React, {useEffect} from 'react';
-import {View, Text, StyleSheet} from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { View, Text, StyleSheet } from 'react-native';
+import { Link } from 'react-router-native';
 
 const COLORS = ['#717EC3', '#5BC0EB', '#FDE74C', '#E55934'];
 
-function PokemonItem({pokemon = 'Evee', number = 1}) {
-  const {item, abbrevation, abbrevationText, pokemonName} = styles;
-  const color = getRandomColor();
+function PokemonItem({ pokemon = 'Evee', number = 1 }) {
+  const [pokemonColor, changeColor] = useState('#000');
+  const { item, abbrevation, abbrevationText, pokemonName } = styles;
   const pokemonAbrv = pokemon.slice(0, 2).toUpperCase();
-  const _abbrevation = {...abbrevation, backgroundColor: color};
+  const _abbrevation = { ...abbrevation, backgroundColor: pokemonColor };
 
   useEffect(() => {
-    console.log('Soy un item ', color, number, pokemon);
+    const color = getRandomColor();
+    changeColor(color);
   }, []);
 
   function getRandomColor() {
@@ -18,13 +20,15 @@ function PokemonItem({pokemon = 'Evee', number = 1}) {
   }
 
   return (
-    <View style={item}>
-      <View style={_abbrevation}>
-        <Text style={abbrevationText}>{pokemonAbrv}</Text>
-      </View>
+    <Link to="/pokemon">
+      <View style={item}>
+        <View style={_abbrevation}>
+          <Text style={abbrevationText}>{pokemonAbrv}</Text>
+        </View>
 
-      <Text style={pokemonName}>{`No. ${number} - ${pokemon}`}</Text>
-    </View>
+        <Text style={pokemonName}>{`No. ${number} - ${pokemon}`}</Text>
+      </View>
+    </Link>
   );
 }
 

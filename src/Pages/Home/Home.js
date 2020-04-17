@@ -9,31 +9,55 @@ import PokemonItem from './Components/PokemonItem';
 import Button from './Components/Button';
 
 function Home() {
-  const [pokemons, updatePokemons] = useState([]);
-  const nextPokemons = null;
+  const [apiData, updateApiData] = useState({
+    pokemons: [],
+    nextPokemons: null,
+  });
 
   useEffect(() => {
-    console.log('Ya me ejecute');
     getPokemons();
   }, []);
 
   async function getPokemons() {
-    // const endPoint = nextPokemons ? nextPokemons : '/pokemon'
+    const endPoint = apiData.nextPokemons ? apiData.nextPokemons : '/pokemon';
     const {
       data: {results, next},
-    } = await axios.get('/pokemon');
-    console.log('Pokemons: ', results.length);
-    updatePokemons(results);
+    } = await axios.get(endPoint);
+
+    updateApiData((prevState) => ({
+      pokemons: prevState.nextPokemons
+        ? [...prevState.pokemons, ...results]
+        : results,
+      nextPokemons: next,
+    }));
+  }
+
+  async function searchPokemonByName(name) {
+    if (name === '') {
+      updateApiData({pokemons: [], nextPokemons: null});
+      getPokemons();
+      return;
+    }
+
+    const res = await axios.get(`/pokemon/${name.toLowerCase()}`);
+
+    if (res.data) {
+      console.log(res.data);
+      updateApiData({pokemons: [{name: res.data.name}], nextPokemons: null});
+    }
   }
 
   return (
     <Layout>
       <Title>Pokedex</Title>
-      <Searchbar placeholder="Search pokemon..." />
+      <Searchbar
+        placeholder="Search pokemon..."
+        onChange={searchPokemonByName}
+      />
 
       <FlatList
         style={styles.pokemonList}
-        data={pokemons}
+        data={apiData.pokemons}
         renderItem={({item, index}) => (
           <PokemonItem
             key={`pk__${index}${item.name}`}
@@ -44,7 +68,7 @@ function Home() {
         keyExtractor={({name}) => name}
       />
 
-      <Button>See pokemons...</Button>
+      <Button onPress={getPokemons}>See pokemons...</Button>
     </Layout>
   );
 }
