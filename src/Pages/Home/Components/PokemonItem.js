@@ -20,7 +20,7 @@ function PokemonItem({ pokemon = 'Evee', number = 1 }) {
   }
 
   return (
-    <Link to="/pokemon">
+    <Link to={{pathname: '/pokemon', state: {pokemon}}}>
       <View style={item}>
         <View style={_abbrevation}>
           <Text style={abbrevationText}>{pokemonAbrv}</Text>
